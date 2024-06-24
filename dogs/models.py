@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 
 class Bread(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название породы', help_text='Введите название породы')
@@ -29,6 +31,8 @@ class Dog(models.Model):
         help_text='Укажите колличество просмотров',
         default=0
     )
+    owner = models.ForeignKey(User, verbose_name='Владелец', help_text='Укажите владельца', blank=True, null=True,
+                              on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = 'Собака'
@@ -41,13 +45,13 @@ class Dog(models.Model):
 
 class Parent(models.Model):
     dog = models.ForeignKey(Dog, related_name='parents', on_delete=models.SET_NULL, null=True, blank=True,
-                            verbose_name='Собака',)
-    name = models.CharField(max_length=100, verbose_name='Кличка', help_text='Введите кличку',)
+                            verbose_name='Собака', )
+    name = models.CharField(max_length=100, verbose_name='Кличка', help_text='Введите кличку', )
     bread = models.ForeignKey(Bread, on_delete=models.SET_NULL, verbose_name='Порода', help_text='Введите породу',
                               blank=True,
-                              null=True, related_name='parentsdogs',)
+                              null=True, related_name='parentsdogs', )
     date_born = models.PositiveIntegerField(blank=True, null=True, verbose_name='Дата рождения',
-                                 help_text='Укажите дату рождения', default=0,)
+                                            help_text='Укажите дату рождения', default=0, )
 
     class Meta:
         verbose_name = 'Собака родитель'

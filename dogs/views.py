@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -20,10 +21,17 @@ class DodDetail(DetailView):
         return self.object
 
 
-class DogCreateView(CreateView):
+class DogCreateView(CreateView, LoginRequiredMixin):
     model = Dog
     form_class = DogForm
     success_url = reverse_lazy('dogs:dog_list')
+
+    def form_valid(self, form):
+        dog = form.save()
+        user = self.request.user
+        dog.owner = user
+        dog.save()
+        return super().form_valid(form)
 
 
 class DogUpdateView(UpdateView):
